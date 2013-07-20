@@ -1,5 +1,6 @@
 var messaging = {};
 
+
 messaging.mixinPubSub = function (object) {
     object = object || {};
     var subscribers = [];
@@ -25,28 +26,38 @@ messaging.mixinPubSub = function (object) {
     return object;
 };
 
-messaging.makeEvented = function (object) {
-    var that = {},
-        subscribers = {};
+
+messaging.mixinEvents = function (object) {
+    var subscribers = {};
 
     _.each(object, function (property, name) {
         if(_.isFunction(property)) {
-            that[name] = function () {
-                object[name].apply(that, arguments);
-                _.each(subscribers[name], function (callback) {
-                    callback();
-                });
-            };
-        }
-        else {
-            that[name] = property;
+            object[name] = (function (originalMethod) {
+                return function () {
+                    originalMethod.apply(object, arguments);
+                    _.each(subscribers[name], function (callback) {
+                        callback();
+                    });
+                };
+            }(object[name]));
         }
     });
 
-    that.on = function (event, callback) {
+    object.on = function (event, callback) {
         subscribers[event] = subscribers[event] || [];
         subscribers[event].push(callback);
     };
 
-    return that;
+    object.off = function (event, callback) {
+        if(callback) {
+            subscribers[event] = _.filter(subscribers[event], function (subscriber) {
+                return subscriber !== callback;
+            });
+        }
+        else {
+            subscribers[event] = undefined;
+        }
+    };
+
+    return object;
 };
