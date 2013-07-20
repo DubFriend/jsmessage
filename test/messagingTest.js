@@ -84,8 +84,8 @@
 
     test("on", function () {
         evented.event1("foo", "bar");
-        deepEqual(event1Data1, "foo", "regular event1 is called with arguments");
-        deepEqual(event1Data2, "bar", "regular event1 is called with arguments");
+        deepEqual(event1Data1, "foo", "event1 is called with arguments");
+        deepEqual(event1Data2, "bar", "event1 is called with arguments");
         ok(isCallback1Called, "callback1 is called when event1 is called");
         ok(isCallback2Called, "callback2 is called when event1 is called");
         deepEqual(event2Data, undefined, "callback3 not called");

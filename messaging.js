@@ -28,14 +28,14 @@ messaging.mixinPubSub = function (object) {
 
 
 messaging.mixinEvents = function (object) {
-    var subscribers = {};
+    var bindings = {};
 
     _.each(object, function (property, name) {
         if(_.isFunction(property)) {
             object[name] = (function (originalMethod) {
                 return function () {
                     originalMethod.apply(object, arguments);
-                    _.each(subscribers[name], function (callback) {
+                    _.each(bindings[name], function (callback) {
                         callback();
                     });
                 };
@@ -44,18 +44,18 @@ messaging.mixinEvents = function (object) {
     });
 
     object.on = function (event, callback) {
-        subscribers[event] = subscribers[event] || [];
-        subscribers[event].push(callback);
+        bindings[event] = bindings[event] || [];
+        bindings[event].push(callback);
     };
 
     object.off = function (event, callback) {
         if(callback) {
-            subscribers[event] = _.filter(subscribers[event], function (subscriber) {
+            bindings[event] = _.filter(bindings[event], function (subscriber) {
                 return subscriber !== callback;
             });
         }
         else {
-            subscribers[event] = undefined;
+            bindings[event] = undefined;
         }
     };
 
