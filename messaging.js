@@ -27,19 +27,41 @@ messaging.mixinPubSub = function (object) {
 };
 
 
-messaging.mixinEvents = function (object) {
-    var bindings = {};
+//  example
+//  var object = messaging.mixinEvents(object, {
+        //passed return value of called method, and "this"
+        //is bound to the object receiving the mixin.
+//      functionName: function (returnValue) {
+            //what is returned is what gets passed to the user supplied callback.
+//          return {
+//              foo: returnValue,
+//              bar: this.objectProperty
+//          };
+//      }
+//  });
+messaging.mixinEvents = function (object, argumentGenerators) {
+    var bindings = {},
+        argGen = argumentGenerators || {};
 
+    //wrap each function of the object with its trigger.
     _.each(object, function (property, name) {
         if(_.isFunction(property)) {
-            object[name] = (function (originalMethod) {
-                return function () {
-                    originalMethod.apply(object, arguments);
+            object[name] = function () {
+                var callbackArg,
+                    returnValue = property.apply(object, arguments);
+
+                if(bindings[name]) {
+                    if(argGen[name]) {
+                        callbackArg = argGen[name].apply(object, [returnValue]);
+                    }
+
                     _.each(bindings[name], function (callback) {
-                        callback();
+                        callback(callbackArg);
                     });
-                };
-            }(object[name]));
+                }
+
+                return returnValue;
+            };
         }
     });
 

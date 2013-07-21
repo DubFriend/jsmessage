@@ -45,7 +45,11 @@
         isCallback1Called,
         isCallback2Called,
         isCallback3Called,
-        callback1 = function () { isCallback1Called = true; },
+        callback1Arguments,
+        callback1 = function (args) {
+            callback1Arguments = args;
+            isCallback1Called = true;
+        },
         callback2 = function () { isCallback2Called = true; },
         callback3 = function () { isCallback3Called = true; };
 
@@ -57,17 +61,29 @@
             isCallback1Called = false;
             isCallback2Called = false;
             isCallback3Called = false;
+            callback1Arguments = undefined;
 
-            evented = messaging.mixinEvents({
-                five: 5,
-                event1: function (data1, data2) {
-                    event1Data1 = data1;
-                    event1Data2 = data2;
+            evented = messaging.mixinEvents(
+                {
+                    five: 5,
+                    event1: function (data1, data2) {
+                        event1Data1 = data1;
+                        event1Data2 = data2;
+                        return data1;
+                    },
+                    event2: function (data) {
+                        event2Data = data;
+                    }
                 },
-                event2: function (data) {
-                    event2Data = data;
+                {
+                    event1: function (returnVal) {
+                        return {
+                            five: this.five,
+                            returnVal: returnVal
+                        };
+                    }
                 }
-            });
+            );
 
             evented.on("event1", callback1);
             evented.on("event1", callback2);
@@ -89,6 +105,11 @@
         ok(isCallback1Called, "callback1 is called when event1 is called");
         ok(isCallback2Called, "callback2 is called when event1 is called");
         deepEqual(event2Data, undefined, "callback3 not called");
+        deepEqual(
+            callback1Arguments,
+            {five: 5, returnVal: "foo"},
+            "callback receives generated arguments"
+        );
 
         evented.event2("baz");
         deepEqual(event2Data, "baz", "regular event2 is called");
