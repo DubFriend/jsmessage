@@ -54,6 +54,23 @@
         deepEqual(callbackData3, "bar", "callbackData3 is updated");
     });
 
+    test("publish/subscribe/unsubscribe no topic set", function () {
+        var callback4Data,
+            callback4 = function (data) {
+                callback4Data = data;
+            };
+
+        publisher.subscribe(callback4);
+        publisher.publish("foo");
+        deepEqual(callback4Data, "foo", "callback set if no topic set");
+        publisher.publish("bar", "topic1");
+        deepEqual(callback4Data, "bar", "callback set even if topic is set");
+
+        publisher.unsubscribe(callback4);
+        publisher.publish("baz");
+        deepEqual(callback4Data, "bar", "callback is unsubscribed");
+    });
+
 }());
 
 

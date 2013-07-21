@@ -108,11 +108,17 @@ var messaging = {};
 
 messaging.mixinPubSub = function (object) {
     object = object || {};
-    var subscribers = {};
+    var subscribers = {},
+        universalSubscribers = [];
 
     object.subscribe = function (callback, topic) {
-        subscribers[topic] = subscribers[topic] || [];
-        subscribers[topic].push(callback);
+        if(topic) {
+            subscribers[topic] = subscribers[topic] || [];
+            subscribers[topic].push(callback);
+        }
+        else {
+            universalSubscribers.push(callback);
+        }
     };
 
     object.unsubscribe = function (subscriber, topic) {
@@ -134,6 +140,9 @@ messaging.mixinPubSub = function (object) {
             lib.each(subscribers, function (values, topic) {
                 subscribers[topic] = filter(topic);
             });
+            universalSubscribers = lib.filter(universalSubscribers, function (callback) {
+                return callback !== subscriber;
+            });
         }
     };
 
@@ -150,6 +159,9 @@ messaging.mixinPubSub = function (object) {
                 });
             });
         }
+        lib.each(universalSubscribers, function (callback) {
+            callback(data);
+        });
     };
 
     return object;
