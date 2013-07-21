@@ -1,5 +1,9 @@
 var messaging = (function () {
-    // Underscore Subset, renamed to "lib" namespace.
+
+
+//-------------- Underscore Subset, renamed to "lib" namespace. ----------------
+
+
     //     Underscore.js 1.5.1
     //     http://underscorejs.org
     //     (c) 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -98,8 +102,7 @@ var messaging = (function () {
 
 
 
-    //--------- end underscore subset ------------------------------------------
-
+//--------------------- end underscore subset ----------------------------------
 
 
 
@@ -154,7 +157,6 @@ var messaging = (function () {
         return object;
     };
 
-
     //  example
     //  var object = messaging.mixinEvents(object, {
             //passed return value of called method, and "this"
@@ -167,6 +169,7 @@ var messaging = (function () {
     //          };
     //      }
     //  });
+
     messaging.mixinEvents = function (object, argumentGenerators) {
         var bindings = {},
             argGen = argumentGenerators || {};
@@ -213,4 +216,5 @@ var messaging = (function () {
     };
 
     return messaging;
+
 }());

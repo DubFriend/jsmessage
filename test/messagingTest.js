@@ -13,20 +13,17 @@
             callbackData = undefined;
             callbackData2 = undefined;
             callbackData3 = undefined;
-            //publisher.subscribe(callback, callback2);
             publisher.subscribe(callback, "topic1");
             publisher.subscribe(callback2, "topic2");
             publisher.subscribe(callback3, "topic2");
-
-            //publisher.publish("foo");
         }
     });
 
     test("methods are added to object", function () {
         deepEqual(publisher.five, 5, "retains existing properties");
-        ok(_.isFunction(publisher.subscribe), "has subscribe method");
-        ok(_.isFunction(publisher.unsubscribe), "has unsubscribe method");
-        ok(_.isFunction(publisher.publish), "has publish method");
+        ok(typeof(publisher.subscribe) === "function", "has subscribe method");
+        ok(typeof(publisher.unsubscribe) === "function", "has unsubscribe method");
+        ok(typeof(publisher.publish) === "function", "has publish method");
     });
 
     test("publish/subscribe", function () {
@@ -116,9 +113,9 @@
 
     test("methods are added to object", function () {
         deepEqual(evented.five, 5, "retains existing properties");
-        ok(_.isFunction(evented.event1), "retains existing methods");
-        ok(_.isFunction(evented.event2), "retains existing methods");
-        ok(_.isFunction(evented.on), "has on method");
+        ok(typeof(evented.event1) === "function", "retains existing methods");
+        ok(typeof(evented.event2) === "function", "retains existing methods");
+        ok(typeof(evented.on) === "function", "has on method");
     });
 
     test("on", function () {
