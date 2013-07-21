@@ -1,9 +1,7 @@
-if(jsMessage === undefined) {
-var jsMessage = (function () {
+(function () {
 "use strict";
 
-//-------------- Underscore Subset, renamed to "lib" namespace. ----------------
-
+//------------------ Underscore Subset, renamed to "lib" -----------------------
 
 //     Underscore.js 1.5.1
 //     http://underscorejs.org
@@ -105,6 +103,22 @@ lib.has = function(obj, key) {
 
 
 var messaging = {};
+//attache to the global object, or to exports (for nodejs)
+if (typeof exports !== 'undefined') {
+    if (typeof module !== 'undefined' && module.exports) {
+        exports = module.exports = messaging;
+    }
+    exports.jsMessage = messaging;
+}
+else {
+    if(this.jsMessage === undefined) {
+        this.jsMessage = messaging;
+    }
+    else {
+        throw "jsMessage is allready defined";
+    }
+}
+
 
 messaging.mixinPubSub = function (object) {
     object = object || {};
@@ -183,7 +197,6 @@ messaging.mixinEvents = function (object, argumentGenerators) {
                     if(argGen[name]) {
                         callbackArg = argGen[name].apply(object, [returnValue]);
                     }
-
                     lib.each(bindings[name], function (callback) {
                         callback(callbackArg);
                     });
@@ -213,11 +226,4 @@ messaging.mixinEvents = function (object, argumentGenerators) {
     return object;
 };
 
-return messaging;
-
-
-}());
-}
-else {
-    throw "jsMessage is allready defined";
-}
+}).call(this);
