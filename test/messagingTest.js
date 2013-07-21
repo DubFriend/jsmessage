@@ -2,16 +2,23 @@
     var publisher,
         callbackData,
         callbackData2,
+        callbackData3,
         callback = function (data) { callbackData = data; },
-        callback2 = function (data) { callbackData2 = data; };
+        callback2 = function (data) { callbackData2 = data; },
+        callback3 = function (data) { callbackData3 = data; };
 
     module("mixinPubSub", {
         setup: function () {
             publisher = messaging.mixinPubSub({five: 5});
             callbackData = undefined;
             callbackData2 = undefined;
-            publisher.subscribe(callback, callback2);
-            publisher.publish("foo");
+            callbackData3 = undefined;
+            //publisher.subscribe(callback, callback2);
+            publisher.subscribe(callback, "topic1");
+            publisher.subscribe(callback2, "topic2");
+            publisher.subscribe(callback3, "topic2");
+
+            //publisher.publish("foo");
         }
     });
 
@@ -22,16 +29,32 @@
         ok(_.isFunction(publisher.publish), "has publish method");
     });
 
-    test("publish/subscribe, multiple subscribers", function () {
-        deepEqual(callbackData, "foo", "first callbackData ok");
-        deepEqual(callbackData2, "foo", "second callbackData ok");
+    test("publish/subscribe", function () {
+        publisher.publish("foo", "topic2");
+        deepEqual(callbackData, undefined, "doesnt call wrong topic callback");
+        deepEqual(callbackData2, "foo", "callbackData2 recieved");
+        deepEqual(callbackData3, "foo", "callbackData3 recieved");
+        publisher.publish("bar", "topic1");
+        deepEqual(callbackData, "bar", "callbackData1 recieved");
+        deepEqual(callbackData2, "foo", "callbackData2 unchanged");
+        deepEqual(callbackData3, "foo", "callbackData3 unchanged");
     });
 
     test("unsubscribe", function () {
-        publisher.unsubscribe(callback);
-        publisher.publish("bar");
-        deepEqual(callbackData, "foo", "callbackData not updated");
-        deepEqual(callbackData2, "bar", "callbackData2 is updated");
+        publisher.unsubscribe(callback2, "topic2");
+        publisher.publish("bar", "topic2");
+        deepEqual(callbackData2, undefined, "callbackData2 not updated");
+        deepEqual(callbackData3, "bar", "callbackData3 is updated");
+    });
+
+    test("unsubscribe from all topics", function () {
+        publisher.subscribe(callback2, "topic1");
+        publisher.unsubscribe(callback2);
+        publisher.publish("foo", "topic1");
+        deepEqual(callbackData2, undefined, "callbackData2 not updated");
+        publisher.publish("bar", "topic2");
+        deepEqual(callbackData2, undefined, "callbackData2 not updated");
+        deepEqual(callbackData3, "bar", "callbackData3 is updated");
     });
 
 }());

@@ -3,24 +3,48 @@ var messaging = {};
 
 messaging.mixinPubSub = function (object) {
     object = object || {};
-    var subscribers = [];
+    var subscribers = {};
 
-    object.subscribe = function () {
-        _.each(arguments, function (callback) {
-            subscribers.push(callback);
-        });
+    object.subscribe = function (callback, topic) {
+        subscribers[topic] = subscribers[topic] || [];
+        subscribers[topic].push(callback);
     };
 
-    object.unsubscribe = function (subscriber) {
-        subscribers = _.filter(subscribers, function (callback) {
-            return callback !== subscriber;
-        });
+    object.unsubscribe = function (subscriber, topic) {
+        var filter = function (topic) {
+            return _.filter(subscribers[topic], function (callback) {
+                return callback !== subscriber;
+            });
+        };
+
+        if(topic) {
+            if(subscribers[topic]) {
+                subscribers[topic] = filter(topic);
+            }
+            else {
+                throw "topic not found";
+            }
+        }
+        else {
+            _.each(subscribers, function (values, topic) {
+                subscribers[topic] = filter(topic);
+            });
+        }
     };
 
-    object.publish = function (data) {
-        _.each(subscribers, function (callback) {
-            callback(data);
-        });
+    object.publish = function (data, topic) {
+        if(topic) {
+            _.each(subscribers[topic], function (callback) {
+                callback(data);
+            });
+        }
+        else {
+            _.each(subscribers, function (values, topic) {
+                _.each(values, function (callback) {
+                    callback(data);
+                });
+            });
+        }
     };
 
     return object;
