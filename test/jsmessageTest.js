@@ -9,7 +9,7 @@
 
     module("mixinPubSub", {
         setup: function () {
-            publisher = messaging.mixinPubSub({five: 5});
+            publisher = jsMessage.mixinPubSub({five: 5});
             callbackData = undefined;
             callbackData2 = undefined;
             callbackData3 = undefined;
@@ -83,7 +83,7 @@
             isCallback3Called = false;
             callback1Arguments = undefined;
 
-            evented = messaging.mixinEvents(
+            evented = jsMessage.mixinEvents(
                 {
                     five: 5,
                     event1: function (data1, data2) {
