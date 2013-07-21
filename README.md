@@ -37,6 +37,10 @@ pubSub.unsubscribe(callbackFunction, "topicName");
 
 #mixinEvents
 Gives passed object an events implementation.  Subscribers register callbacks to listen for when specific methods are executed.  mixinEvents should be called last, after the passed object is allready completely defined.  (Any methods added after will not be visible to the events system)
+
+The second argument to mixinEvents defines functions that will be used to generate arguments that will be passed to the listening callback functions. The second argument is optional, and may be defined for only a subset of the objects methods.
+
+**example**
 ```javascript
 var object = {
     prop: "foo",
@@ -44,9 +48,7 @@ var object = {
         return num + 1;
     }
 };
-```
-The second argument to mixinEvents defines functions that will be used to generate arguments that will be passed to the listening callback functions. The second argument is optional, and may be defined for only a subset of the objects methods.
-```javascript
+
 object = jsMessage.mixinEvents(object, {
     //these functions will be passed the return value of the associated method,
     //and will have their "this" value set to the object getting the event mixin.
