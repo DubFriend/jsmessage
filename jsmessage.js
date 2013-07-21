@@ -1,6 +1,6 @@
 if(jsMessage === undefined) {
 var jsMessage = (function () {
-
+"use strict";
 
 //-------------- Underscore Subset, renamed to "lib" namespace. ----------------
 
@@ -88,12 +88,9 @@ lib.filter = function (obj, iterator, context) {
     return results;
 };
 
-// Optimize `isFunction` if appropriate.
-if (typeof (/./) !== 'function') {
-    lib.isFunction = function(obj) {
-        return typeof obj === 'function';
-    };
-}
+lib.isFunction = function(obj) {
+    return typeof obj === 'function';
+};
 
 // Shortcut function for checking if an object has a given property directly
 // on itself (in other words, not on a prototype).
@@ -158,18 +155,6 @@ messaging.mixinPubSub = function (object) {
     return object;
 };
 
-//  example
-//  var object = messaging.mixinEvents(object, {
-        //passed return value of called method, and "this"
-        //is bound to the object receiving the mixin.
-//      functionName: function (returnValue) {
-            //what is returned is what gets passed to the user supplied callback.
-//          return {
-//              foo: returnValue,
-//              bar: this.objectProperty
-//          };
-//      }
-//  });
 
 messaging.mixinEvents = function (object, argumentGenerators) {
     var bindings = {},
