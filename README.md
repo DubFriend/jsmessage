@@ -12,15 +12,15 @@ object = jsMessage.mixinPubSub(object);
 ####publish
 Publish data to all subscribers of a given topic.
 ```javascript
-pubSub.publish(data, "topicName");
+pubSub.publish("topicName", data);
 ```
 
 ####subscribe
 Subscribe a callback function to receive updates on a specified topic from the pubSub object.
 ```javascript
-pubSub.subscribe(function (data) {
+pubSub.subscribe("topicName", function (data) {
     console.log(data);
-}, "topicName");
+});
 ```
 
 ####unsubscribe
