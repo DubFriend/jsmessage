@@ -5,7 +5,13 @@ module.exports = function(grunt) {
 
         uglify: {
             options: {
-                banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n'
+                banner: '' +
+                '/*  <%= pkg.name %>\n' +
+                '    <%= pkg.website %>\n' +
+                '    <%= pkg.author.name %> | ' +
+                    '<%= pkg.author.email %> | ' +
+                    '<%= pkg.author.website %>\n' +
+                '    <%= grunt.template.today("dd-mm-yyyy") %> */\n'
             },
             dist: {
                 files: { '<%= pkg.name %>.min.js': ['<%= pkg.name %>.js'] }
@@ -13,11 +19,11 @@ module.exports = function(grunt) {
         },
 
         qunit: {
-            files: ['js/test/index.html']
+            files: ['test/index.html']
         },
 
         jshint: {
-            files: ['*.js', 'test/*.js'],
+            files: ['jsmessage.js', 'test/jsmessageTest.js'],
             options: {
                 globals: {
                     jQuery: true,
@@ -30,8 +36,9 @@ module.exports = function(grunt) {
     });
 
     grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-contrib-jshint');
+    //grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-qunit');
 
-    grunt.registerTask('default', ['jshint', 'qunit', 'uglify']);
+    //grunt.registerTask('default', ['jshint']);
+    grunt.registerTask('default', ['qunit', 'uglify']);
 };

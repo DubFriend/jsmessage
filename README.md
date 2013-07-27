@@ -32,6 +32,17 @@ pubSub.unsubscribe(callbackFunction);
 pubSub.unsubscribe(callbackFunction, "topicName");
 ```
 
+####autoPublish
+Returns a getter/setter function that automatically publishes to a given topic when the data is set to a new value.
+```javascript
+var data = pubSub.autoPublish("topicName");
+
+//sets data to "hello" and publishes "hello" to "topicName"
+data("hello");
+
+//returns "hello", does not publish.
+var storedValue = data();
+```
 
 
 
