@@ -43,6 +43,15 @@ data("hello");
 //returns "hello", does not publish.
 var storedValue = data();
 ```
+autoPublish takes an optional callback as its second argument.  The callback will be called on data before it is published.
+```javascript
+var data = pubSub.autoPublish("topicName", function (data) {
+    return data.toUpperCase();
+});
+
+data("foo"); //publishes "FOO"
+data() === "foo"; //true
+```
 
 
 
