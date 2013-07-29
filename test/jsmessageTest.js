@@ -87,8 +87,11 @@
             return data.toUpperCase();
         });
         setterAndGetter("foo");
+
         deepEqual(callbackData, "FOO", "published data is mapped by callback");
+        deepEqual(setterAndGetter(), "foo", "getter gets unmapped data");
     });
+
 
 }());
 
